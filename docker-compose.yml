@@ -1,0 +1,23 @@
+version: '3.1'
+
+services:
+  wishlist:
+    image: wishlist
+    build:
+      context: ./
+      dockerfile: src/main/docker/Dockerfile.${QUARKUS_MODE:-jvm}
+    environment:
+      QUARKUS_DATASOURCE_URL: jdbc:mysql://db:3306/wishlist?autoReconnect=true
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: senha
+    volumes:
+      - ./script-db:/docker-entrypoint-initdb.d
